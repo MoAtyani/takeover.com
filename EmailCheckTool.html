@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Search</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    #result {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    #spinner {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="text-center">Email Search</h1>
+  <div class="form-group">
+    <label for="emailInput">Enter Email:</label>
+    <input type="email" class="form-control" id="emailInput" placeholder="Enter email">
+  </div>
+  <button type="button" class="btn btn-primary" onclick="searchEmail()">Search</button>
+  <div id="spinner" class="text-center mt-3">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <div id="result" class="mt-3"></div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  function searchEmail() {
+    var email = document.getElementById('emailInput').value;
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('result').innerHTML = '';
+
+    fetch('https://api.proxynova.com/comb?query=' + email)
+      .then(response => response.json())
+      .then(data => {
+        displayResult(data);
+        document.getElementById('spinner').style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('result').innerHTML = '<div class="alert alert-danger" role="alert">An error occurred. Please try again later.</div>';
+      });
+  }
+
+  function displayResult(data) {
+    var resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '';
+    if (data.count > 0) {
+      var lines = data.lines;
+      var resultList = document.createElement('ul');
+      resultList.className = 'list-group';
+      lines.forEach(line => {
+        var listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.textContent = line;
+        resultList.appendChild(listItem);
+      });
+      resultDiv.appendChild(resultList);
+    } else {
+      resultDiv.innerHTML = '<div class="alert alert-info" role="alert">No results found.</div>';
+    }
+  }
+</script>
+
+</body>
+</html>
